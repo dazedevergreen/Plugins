@@ -3606,7 +3606,7 @@ void ZYXtest::OnAutoPositionStart()
 
 	/*std::cout << "currentxunderBase: " << currentXunderBase << std::endl;*/
 
-	//在Base坐标系下目标坐标系Z轴的方向向量
+	//在Base坐标系下目标坐标系x轴的方向向量
 	Eigen::Vector3d X_target;
 	X_target[0] = targetPointUnderBase_1[0] - targetPointUnderBase_0[0];
 	X_target[1] = targetPointUnderBase_1[1] - targetPointUnderBase_0[1];
