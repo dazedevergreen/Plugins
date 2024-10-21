@@ -1,0 +1,30 @@
+set(MITK_PLUGINS
+  org.mitk.exampleplugin.eageractivation:ON
+  org.mitk.gui.qt.exampleplugin:ON
+  org.mitk.virtualcorrection:ON
+  org.mitk.lancet.spinectregistration:ON
+  org.mitk.lancet.movedata:ON
+  org.mitk.lancet.spinecarmregistration:ON
+  org.mitk.lancet.robot:ON
+  org.mitk.lancet.accuracytest:ON
+  org.mitk.lancet.dentalwidget:ON
+  org.mitk.lancet.gui.qt.testsuite:ON
+  org.mitk.lancet.view.deviceconfig:ON
+  org.mitk.lancet.imageregistration:ON
+  org.mitk.lancet.htotest:ON
+  org.mitk.lancet.surgicalsimulate:ON
+  org.mitk.lancet.kukarobotcontrol:ON
+  org.mitk.lancet.hipplanning:ON
+  org.mitk.lancet.cameratest:ON
+  org.mitk.lancet.dentalAccuracy:ON
+  #org.mitk.lancet.panorama:ON
+  #org.mitk.lancet.texttttt:ON
+  org.mitk.lancet.spinedemo:ON
+  org.mitk.lancet.HTOrobot:ON
+  org.mitk.lancet.ZYXtest:ON
+  org.mitk.lancet.dazutest:ON
+  org.mitk.lancet.zzxtest:ON
+  org.mitk.lancet.DianaSeven:ON
+  org.mitk.lancet.OralRobot:ON
+  org.mitk.lancet.totalkneearthroplasty:ON
+)

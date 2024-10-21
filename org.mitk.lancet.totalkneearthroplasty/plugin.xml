@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+
+  <extension point="org.blueberry.ui.views">
+    <view id="org.mitk.views.totalkneearthroplasty"
+          name="Total Knee Arthroplasty"
+          class="TotalKneeArthroplasty"
+          icon="resources/icon.xpm" />
+  </extension>
+
+</plugin>
