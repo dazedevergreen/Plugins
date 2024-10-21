@@ -1365,7 +1365,7 @@ void DazuTest::MoveJ() {
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	std::string TCP_NAME = m_Controls.lineEdit_TCPName->text().toStdString();
-	HRIF_MoveJ(0, 0, TargetPoint[0], TargetPoint[1], TargetPoint[2], TargetPoint[3], TargetPoint[4], TargetPoint[5], 0, 0, 0, 0, 0, 0, TCP_NAME, "Base", 10, 12, 30, 0, 0, 0, 0, "0");
+	HRIF_MoveJ(0, 0, TargetPoint[0], TargetPoint[1], TargetPoint[2], TargetPoint[3], TargetPoint[4], TargetPoint[5],0, 0, 90, 0, 0, 0, TCP_NAME, "Base", 10, 12, 30, 1, 0, 0, 0, "0");
 	//Robot->MoveJ(m_Controls.textBrowser_Log, TargetPoint);
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
