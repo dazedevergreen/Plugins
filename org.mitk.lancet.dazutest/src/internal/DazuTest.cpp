@@ -1257,7 +1257,9 @@ void DazuTest::ConfigTCP() {
 	};
 
 	std::string TCP_NAME = m_Controls.lineEdit_TCPName->text().toStdString();
-	Robot->ConfigFlangetoTCP(m_Controls.textBrowser_Log, TCP, TCP_NAME);
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	HRIF_ConfigTCP(0, 0, TCP_NAME, TCP[0], TCP[1], TCP[2], TCP[3], TCP[4], TCP[5]);
+	//Robot->ConfigFlangetoTCP(m_Controls.textBrowser_Log, TCP, TCP_NAME);
 }
 
 void DazuTest::ReadBasetoFlange() {

@@ -27,4 +27,5 @@ set(MITK_PLUGINS
   org.mitk.lancet.DianaSeven:ON
   org.mitk.lancet.OralRobot:ON
   org.mitk.lancet.totalkneearthroplasty:ON
+  org.mitk.lancet.dentalrobot:ON
 )
