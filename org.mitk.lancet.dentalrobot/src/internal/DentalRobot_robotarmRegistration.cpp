@@ -185,10 +185,10 @@ void DentalRobot::captureRobot()
 	{
 		//MITK_INFO << "OnRobotCapture finish: " << m_IndexOfRobotCapture;
 		vtkNew<vtkMatrix4x4> robotEndToFlangeMatrix;
-		m_RobotRegistration.GetTCPmatrix(robotEndToFlangeMatrix);
+		m_RobotRegistration->GetTCPmatrix(robotEndToFlangeMatrix);
 
 		vtkMatrix4x4* matrix4x4 = vtkMatrix4x4::New();
-		m_RobotRegistration.GetRegistraionMatrix(matrix4x4);
+		m_RobotRegistration->GetRegistraionMatrix(matrix4x4);
 
 		double x = robotEndToFlangeMatrix->GetElement(0, 3);
 		double y = robotEndToFlangeMatrix->GetElement(1, 3);
@@ -199,16 +199,16 @@ void DentalRobot::captureRobot()
 
 		robotEndToFlangeMatrix->Invert();
 
-		m_Controls.textBrowser->append("Registration RMS: " + QString::number(m_RobotRegistration.RMS()));
-		std::cout << "Registration RMS: " << m_RobotRegistration.RMS() << std::endl;
+		m_Controls.textBrowser->append("Registration RMS: " + QString::number(m_RobotRegistration->RMS()));
+		std::cout << "Registration RMS: " << m_RobotRegistration->RMS() << std::endl;
 
 		vtkMatrix4x4* vtkT_BaseToBaseRF = vtkMatrix4x4::New();
-		m_RobotRegistration.GetRegistraionMatrix(vtkT_BaseToBaseRF);
+		m_RobotRegistration->GetRegistraionMatrix(vtkT_BaseToBaseRF);
 		vtkT_BaseToBaseRF->Invert();
 		memcpy_s(m_T_BaseToBaseRF, sizeof(double) * 16, vtkT_BaseToBaseRF->GetData(), sizeof(double) * 16);
 
 		vtkMatrix4x4* vtkT_FlangeToEndRF = vtkMatrix4x4::New();
-		m_RobotRegistration.GetTCPmatrix(vtkT_FlangeToEndRF);
+		m_RobotRegistration->GetTCPmatrix(vtkT_FlangeToEndRF);
 		memcpy_s(m_T_FlangeToEdnRF, sizeof(double) * 16, vtkT_FlangeToEndRF->GetData(), sizeof(double) * 16);
 	}
 }
@@ -256,13 +256,13 @@ void DentalRobot::CapturePose(bool translationOnly)
 	tmpTransform->Update();
 	auto vtkBaseRFtoRoboEndRFMatrix = tmpTransform->GetMatrix();
 	//Robotic arm registration
-	m_RobotRegistration.AddPoseWithVtkMatrix(VTKT_BaseToFlanger, vtkBaseRFtoRoboEndRFMatrix, translationOnly);
+	m_RobotRegistration->AddPoseWithVtkMatrix(VTKT_BaseToFlanger, vtkBaseRFtoRoboEndRFMatrix, translationOnly);
 }
 
 void DentalRobot::replaceRegistration()
 {
 	m_Controls.textBrowser->append("Replace Registration");
-	m_RobotRegistration.RemoveAllPose();
+	m_RobotRegistration->RemoveAllPose();
 	m_IndexOfRobotCapture = 0;
 	m_Controls.lineEdit_collectedRoboPose->setText(QString::number(0));
 

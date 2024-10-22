@@ -204,7 +204,6 @@ bool DaZuRobot::ConfigFlangetoTCP(QTextBrowser* browser, std::array<double, 6> T
 	this->SetMoveToolMotion(browser, 1);
 	this->SetMoveToolMotion(browser, 0);
 	this->SetMoveToolMotion(browser, 1);
-	this->SetFlangetoTCP(browser, TCP, TCP_Name);
 	if (!nRet)
 	{
 		return true;

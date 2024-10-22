@@ -81,7 +81,8 @@ public:
   AimHandle aimHandle = NULL;
 
   //初始化机械配准的类
-  RobotRegistration m_RobotRegistration;
+  RobotRegistration::Pointer m_RobotRegistration = RobotRegistration::New();
+
   mitk::DataNode* m_IcpSourceSurface{ nullptr };
   void InitPointSetSelector(QmitkSingleNodeSelectionWidget* widget);
 
@@ -165,7 +166,7 @@ public:
   double dJ4_J = 0; double dJ5_J = 0; double dJ6_J = 0;
 
   int nMoveType = 0;
-  string sTcpName = "TCP_1";
+  string sTcpName = "TCP_Dental";
   string sUcsName = "Base";
   double dVelocity = 10;
   double dAcc = 12;
@@ -370,7 +371,7 @@ protected:
 
   double CalImplantToAlveolarNerve();
 
-  mitk::NavigationData::Pointer DentalRobot::GetNavigationDataInRef(mitk::NavigationData::Pointer nd,
+  mitk::NavigationData::Pointer GetNavigationDataInRef(mitk::NavigationData::Pointer nd,
 	  mitk::NavigationData::Pointer nd_ref);
 
   void TurnOffAllNodesVisibility();
@@ -403,7 +404,7 @@ protected:
   
   //void get_ToolInfor();
   //void GetNewToolData();
-  T_AimToolDataResult* DentalRobot::GetNewToolData();
+  T_AimToolDataResult* GetNewToolData();
   void UpdateCameraToToolMatrix(T_AimToolDataResult* ToolData, const char* Name, double* aCamera2Tool, QLabel* label);
 
 
@@ -443,8 +444,8 @@ protected:
 
   // Rewrite the image registration and navigation part without using the MITK IGT pipeline
 
-  mitk::PointSet::Pointer m_probeDitchPset_cmm; // probe ditch points from CMM
-  mitk::PointSet::Pointer m_probeDitchPset_image; // probe ditch points under image frame
+  mitk::PointSet::Pointer m_probeDitchPset_cmm = mitk::PointSet::New();// probe ditch points from CMM
+  mitk::PointSet::Pointer m_probeDitchPset_image = mitk::PointSet::New(); // probe ditch points under image frame
   //mitk::PointSet::Pointer m_probeDitchPset_rf; // probe ditch points under patientRF
 
   //double CalculateDistance(const mitk::Point3D& point1, const mitk::Point3D& point2);
@@ -589,7 +590,8 @@ protected:
 
   E_ReturnValue rlt;
   QTimer* m_AimooeVisualizeTimer{ nullptr };
-  LancetHansRobot* m_LancetHansRobot;
+  LancetHansRobot m_HansRobot;
+  LancetHansRobot* m_LancetHansRobot = &m_HansRobot;
 };
 
 #endif // DentalRobot_h

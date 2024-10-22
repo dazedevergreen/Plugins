@@ -907,7 +907,7 @@ void DazuTest::ReuseRegistrationMatrixImageBone() {
 }
 
 void DazuTest::StartForceControl() {
-	std::array<double, 6> Freedom{ 0,0,0,0,0,1 };
+	std::array<double, 6> Freedom{ 0,0,1,0,0,0 };
 	Robot->SetForceZero(m_Controls.textBrowser_Log);
 	Robot->SetForceFreeDriveFreedom(m_Controls.textBrowser_Log, Freedom);
 	// 定义力控自由驱动自由度状态
@@ -952,29 +952,28 @@ void DazuTest::DeepProtection() {
 		+ pow(vtk_TCPtoTarget->GetElement(2, 3), 2));
 	//距离小于0.2mm或者TCPZ轴方向上距离为负就停止力控并延当前TCPZ轴回退2mm，之后人工再次开启力控或自由拖动就行了
 	//理论上来说没什么问题，就是怕实际运行的时候出差错
-	if (distance < 0.1 || vtk_TCPtoTarget->GetElement(2, 3) < 0) {
-		std::array<double, 6> Force = Robot->ReadFTCabData(m_Controls.textBrowser_Log);
-		if (m_Controls.radioButton_mandible->isChecked() && Force[3] < 0) {
-			Robot->SetForceZero(m_Controls.textBrowser_Log);
-			Robot->SetForceFreeDrive(m_Controls.textBrowser_Log, 1);
+	if (m_Controls.radioButton_mandible->isChecked()) {
+		if (distance < 0.1 || vtk_TCPtoTarget->GetElement(2, 3) < 0) {
+			std::array<double, 6> Force = Robot->ReadFTCabData(m_Controls.textBrowser_Log);
+			if (Force[3] > 0) {
+				Robot->SetForceFreeDrive(m_Controls.textBrowser_Log, 1);
+			}
+			else
+			{
+				Robot->Stop(m_Controls.textBrowser_Log);
+			}
 		}
-		else if (m_Controls.radioButton_maxilla->isChecked() && Force[3] > 0) {
-			Robot->SetForceZero(m_Controls.textBrowser_Log);
-			Robot->SetForceFreeDrive(m_Controls.textBrowser_Log, 1);
-		} 
-		else
-		{
-			Robot->Stop(m_Controls.textBrowser_Log);
-			//DeepProtectionTimer->stop();
-
-			////软件显示已到达目标深度，其实如果能从机械臂身上把供电捞出去，设置电钻不钻就可以了，也不需要这些stop什么的。
-			//Robot->UtilityFunction->Sleep(800);
-			////页面上点击确定后再开启
-			//Robot->SetForceFreeDrive(m_Controls.textBrowser_Log, 1);
-			//Robot->UtilityFunction->Sleep(1000);
-			//DeepProtectionTimer->start(30);
+	}else if (m_Controls.radioButton_maxilla->isChecked()) {
+		if (distance < 0.1 || vtk_TCPtoTarget->GetElement(2, 3) > 0) {
+			std::array<double, 6> Force = Robot->ReadFTCabData(m_Controls.textBrowser_Log);
+			if (Force[3] < 0) {
+				Robot->SetForceFreeDrive(m_Controls.textBrowser_Log, 1);
+			}
+			else
+			{
+				Robot->Stop(m_Controls.textBrowser_Log);
+			}
 		}
-		
 	}
 }
 
@@ -1257,9 +1256,7 @@ void DazuTest::ConfigTCP() {
 	};
 
 	std::string TCP_NAME = m_Controls.lineEdit_TCPName->text().toStdString();
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	HRIF_ConfigTCP(0, 0, TCP_NAME, TCP[0], TCP[1], TCP[2], TCP[3], TCP[4], TCP[5]);
-	//Robot->ConfigFlangetoTCP(m_Controls.textBrowser_Log, TCP, TCP_NAME);
+	Robot->ConfigFlangetoTCP(m_Controls.textBrowser_Log, TCP, TCP_NAME);
 }
 
 void DazuTest::ReadBasetoFlange() {
