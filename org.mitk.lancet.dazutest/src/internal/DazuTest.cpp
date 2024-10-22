@@ -955,7 +955,7 @@ void DazuTest::DeepProtection() {
 	if (m_Controls.radioButton_mandible->isChecked()) {
 		if (distance < 0.1 || vtk_TCPtoTarget->GetElement(2, 3) < 0) {
 			std::array<double, 6> Force = Robot->ReadFTCabData(m_Controls.textBrowser_Log);
-			if (Force[3] > 0) {
+			if (Force[2] > 0) {
 				Robot->SetForceFreeDrive(m_Controls.textBrowser_Log, 1);
 			}
 			else
@@ -966,7 +966,7 @@ void DazuTest::DeepProtection() {
 	}else if (m_Controls.radioButton_maxilla->isChecked()) {
 		if (distance < 0.1 || vtk_TCPtoTarget->GetElement(2, 3) > 0) {
 			std::array<double, 6> Force = Robot->ReadFTCabData(m_Controls.textBrowser_Log);
-			if (Force[3] < 0) {
+			if (Force[2] < 0) {
 				Robot->SetForceFreeDrive(m_Controls.textBrowser_Log, 1);
 			}
 			else
