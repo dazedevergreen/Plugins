@@ -272,9 +272,10 @@ void DentalRobot::reuseTCPCalibrateMatrix()
 		inputFile.close();
 
 		QString output;
+		output += QString::fromStdString("Regiatration Matrix:[\n");
 		for (int i = 0; i < 16; i++)
 		{
-			output += "Regiatration Matrix:[" + QString::number(i) + "]" + QString::number(m_T_FlangeToTCP[i]) + " ";
+			output +=  QString::number(i) + "]" + QString::number(m_T_FlangeToTCP[i]) + " ";
 		}
 		m_Controls.textBrowser->append(output);
 	}
@@ -283,29 +284,6 @@ void DentalRobot::reuseTCPCalibrateMatrix()
 		std::cerr << "Error:" << e.what() << std::endl;
 		m_Controls.textBrowser->append("Failed to load registration result");
 	}
-	vtkSmartPointer <vtkMatrix4x4> T_FlangetoTCP;
-	T_FlangetoTCP->DeepCopy(m_T_FlangeToTCP);
-
-	Eigen::Vector3d RX;
-	Eigen::Vector3d RY;
-	Eigen::Vector3d RZ;
-	Eigen::Vector3d Re;
-
-	RX[0] = T_FlangetoTCP->GetElement(0, 0);
-	RX[1] = T_FlangetoTCP->GetElement(1, 0);
-	RX[2] = T_FlangetoTCP->GetElement(2, 0);
-
-	RY[0] = T_FlangetoTCP->GetElement(0, 1);
-	RY[1] = T_FlangetoTCP->GetElement(1, 1);
-	RY[2] = T_FlangetoTCP->GetElement(2, 1);
-
-	RZ[0] = T_FlangetoTCP->GetElement(0, 2);
-	RZ[1] = T_FlangetoTCP->GetElement(1, 2);
-	RZ[2] = T_FlangetoTCP->GetElement(2, 2);
-
-	Re << RX[0], RY[0], RZ[0],
-		RX[1], RY[1], RZ[1],
-		RX[2], RY[2], RZ[2];
 }
 
 void DentalRobot::collectDitch() 
@@ -618,14 +596,21 @@ void DentalRobot::startNavigation()
 {
 	qDebug() << "---- - navigation start------";
 	m_Controls.textBrowser->append("-----navigation start------");
-
 	disconnect(m_AimoeVisualizeTimer, &QTimer::timeout, this, &DentalRobot::UpdateDrillVisual);
-
+	double probeDrillLength = 1;
 	// m_NaviMode = 0;
 	//根据输入长度和 m_T_handpieceRFtoInputDrill 修改钻头/探针表面的长度和 m_T_handpieceRFtoInputDrill
 	double inputDrillLength = m_Controls.lineEdit_drillLength->text().toDouble();//钻头长度（实际）
-	auto probe_head_tail_mandible = dynamic_cast<mitk::PointSet*>(GetDataStorage()->GetNamedNode("probe_head_tail_mandible")->GetData());
-	double probeDrillLength = GetPointDistance(probe_head_tail_mandible->GetPoint(0), probe_head_tail_mandible->GetPoint(1));//探针长度（设定）
+	if (GetDataStorage()->GetNamedNode("probe_head_tail_mandible") != nullptr)
+	{
+		auto probe_head_tail_mandible = dynamic_cast<mitk::PointSet*>(GetDataStorage()->GetNamedNode("probe_head_tail_mandible")->GetData());
+		probeDrillLength = GetPointDistance(probe_head_tail_mandible->GetPoint(0), probe_head_tail_mandible->GetPoint(1));//探针长度（设定）
+	}
+	else {
+		std::cout << "probe miss" << std::endl;
+		m_Controls.textBrowser->append(QString::fromStdString("probe miss"));
+	}
+	
 	double z_scale = inputDrillLength / probeDrillLength;//缩放系数
 
 	auto T_probeDrilltoInputDrill = vtkMatrix4x4::New();
@@ -663,12 +648,45 @@ void DentalRobot::startNavigation()
 	memcpy_s(m_T_EndRFToInputTCP, sizeof(double) * 16, T_EndRFtoDrill_new->GetData(), sizeof(double) * 16);
 
 	TurnOffAllNodesVisibility();
-	GetDataStorage()->GetNamedNode("CBCT Bounding Shape_cropped")->SetVisibility(true);
-	GetDataStorage()->GetNamedNode("drillSurface")->SetVisibility(true);
+	if (GetDataStorage()->GetNamedNode("CBCT Bounding Shape_cropped") != nullptr)
+	{
+		GetDataStorage()->GetNamedNode("CBCT Bounding Shape_cropped")->SetVisibility(true);
+	}
+	else {
+		std::cout << "CBCT Bounding Shape_cropped miss" << std::endl;
+		m_Controls.textBrowser->append(QString::fromStdString("CBCT Bounding Shape_cropped miss"));
+	}
+	if (GetDataStorage()->GetNamedNode("drillSurface") != nullptr) {
 
-	GetDataStorage()->GetNamedNode("stdmulti.widget0.plane")->SetVisibility(false);
-	GetDataStorage()->GetNamedNode("stdmulti.widget1.plane")->SetVisibility(false);
-	GetDataStorage()->GetNamedNode("stdmulti.widget2.plane")->SetVisibility(false);
+		GetDataStorage()->GetNamedNode("drillSurface")->SetVisibility(true);
+	}
+	else {
+		std::cout << "drillSurface miss" << std::endl;
+		m_Controls.textBrowser->append(QString::fromStdString("drillSurface miss"));
+	}
+	if (GetDataStorage()->GetNamedNode("stdmulti.widget0.plane") != nullptr) {
+
+		GetDataStorage()->GetNamedNode("stdmulti.widget0.plane")->SetVisibility(false);
+	}
+	else {
+		std::cout << "stdmulti.widget0.plane miss" << std::endl;
+		m_Controls.textBrowser->append(QString::fromStdString("stdmulti.widget0.plane miss"));
+	}
+	if (GetDataStorage()->GetNamedNode("stdmulti.widget1.plane") != nullptr) {
+
+		GetDataStorage()->GetNamedNode("stdmulti.widget1.plane")->SetVisibility(false);
+	}
+	else {
+		std::cout << "stdmulti.widget1.plane miss" << std::endl;
+		m_Controls.textBrowser->append(QString::fromStdString("stdmulti.widget1.plane miss"));
+	}
+	if(GetDataStorage()->GetNamedNode("stdmulti.widget2.plane") != nullptr){
+		GetDataStorage()->GetNamedNode("stdmulti.widget2.plane")->SetVisibility(false);
+	}
+	else {
+		std::cout << "stdmulti.widget2.plane miss" << std::endl;
+		m_Controls.textBrowser->append(QString::fromStdString("stdmulti.widget2.plane miss"));
+	}
 
 	connect(m_AimoeVisualizeTimer, &QTimer::timeout, this, &DentalRobot::UpdateDrillVisual);
 

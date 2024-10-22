@@ -1483,7 +1483,11 @@ void DentalRobot::UpdateCameraToToolMatrix(T_AimToolDataResult* ToolData, const 
 
 void DentalRobot::OnAutoPositionStart()
 {
-	// ȷ��Ŀ���ߣ����ȡ�����ݵ��뵽P2��P3��
+	if (m_Controls.mitkNodeSelectWidget_imageTargetLine->GetSelectedNode() == nullptr) {
+		std::cout << "TargetLine miss" << std::endl;
+		m_Controls.textBrowser->append(QString::fromStdString("TargetLine miss"));
+		return;
+	}
 	auto targetLinePoints = dynamic_cast<mitk::PointSet*>(m_Controls.mitkNodeSelectWidget_imageTargetLine->GetSelectedNode()->GetData());
 	auto targetPoint_0 = targetLinePoints->GetPoint(0); // TCP frame origin should move to this point
 	auto targetPoint_1 = targetLinePoints->GetPoint(1);
