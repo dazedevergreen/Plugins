@@ -247,7 +247,7 @@ public:
 	double T_FlangeToTCP[16]{ 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
 
 
-	std::array<double, 6> T_TargetPoint{ 354.264,-6.902,486.621,-174.133,40.062,-175.509 };
+	std::array<double, 6> T_TargetPoint{ 458.324,-63.638,379.551,179.898,32.922,176.577 };
 
 	double T_BasetoTarget[16]{ 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
 
